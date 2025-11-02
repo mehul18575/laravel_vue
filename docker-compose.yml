@@ -1,0 +1,84 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile
+    container_name: ignite_app
+    restart: unless-stopped
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    networks:
+      - laravel
+    depends_on:
+      - db
+      - frontend
+    command: >
+      sh -c "php artisan migrate --force && php-fpm"
+      
+  nginx:
+    image: nginx:latest
+    container_name: laravel_nginx
+    restart: unless-stopped
+    ports:
+      - "8080:80"
+    volumes:
+      - .:/var/www/html
+      - ./docker/nginx/default.conf:/etc/nginx/conf.d/default.conf
+    networks:
+      - laravel
+    depends_on:
+      - app
+
+  frontend:
+    image: node:20
+    container_name: 'vue_frontend'
+    working_dir: /var/www/html
+    volumes:
+      - .:/var/www/html
+    command: sh -c "npm install && npm run build"
+    networks:
+      - laravel
+
+  db:
+    image: postgres:16
+    container_name: laravel_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ignitesol
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: admin123
+    ports:
+      - "5433:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - laravel
+
+  db_import:
+    image: postgres:16
+    container_name: db_import
+    depends_on:
+      - db
+    volumes:
+      - ./database/init/gutendex.dump:/docker-entrypoint-initdb.d/gutendex.sql:ro
+    command: >
+      sh -c "
+        echo '⏳ Waiting for PostgreSQL to be ready...' &&
+        until pg_isready -h db -U root; do
+          sleep 2;
+        done &&
+        echo '✅ PostgreSQL is up. Importing dump...' &&
+        psql -h db -U root -d ignitesol -f /docker-entrypoint-initdb.d/gutendex.sql &&
+        echo '✅ Import complete!'
+      "
+    environment:
+      PGPASSWORD: admin123
+    networks:
+      - laravel
+      
+networks:
+  laravel:
+
+volumes:
+  db_data:

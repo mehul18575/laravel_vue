@@ -1,0 +1,34 @@
+@import 'tailwindcss';
+
+/* Custom Components */
+@layer components {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .text-primary {
+    color: #5E56E7;
+  }
+  .text-secondary {
+    color: #F8F7FF;
+  }
+  .bg-primary {
+    background-color: #F8F7FF;
+  }
+  .bg-secondary {
+    background-color: #F8F7FF;
+  }
+
+}
+
+/* Global font setup */
+@layer base {
+  * {
+    font-size: 16px;
+    font-family: 'Montserrat', sans-serif;
+    font-weight: 400;
+  }
+}
