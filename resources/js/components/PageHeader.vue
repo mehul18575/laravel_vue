@@ -5,7 +5,7 @@
                 style="background-image: url('/images/Pattern.svg'); opacity: 0.6;"></div>
             <div class="relative md:py-16 py-12 px-6 max-w-6xl mx-auto text-left">
                 <h1 class="text-[48px] text-[#5E56E7] font-[Montserrat] font-semibold">
-                    Gutenberg Project
+                    Gutenberg Project - Mehul Savaliya
                 </h1>
                 <p class="text-[20px] font-semibold text-gray-800 mt-2 max-w-3xl">
                     A social cataloging website that allows you to freely search its
