@@ -76,7 +76,7 @@ return [
             ],
         ],
         'constants' => [
-            'L5_SWAGGER_CONST_HOST' => env('APP_URL', 'http://ignite.local') . '/api',
+            'L5_SWAGGER_CONST_HOST' => env('APP_URL', 'http://203.161.49.206:3010') . '/api',
         ],
     ],
 ];
