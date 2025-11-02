@@ -1,4 +1,4 @@
-name: 🚀 Deploy Laravel + Vue App
+name: Deploy Laravel + Vue App
 
 on:
   push:
