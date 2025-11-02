@@ -1,1 +1,41 @@
+name: 🚀 Deploy Laravel + Vue App
 
+on:
+  push:
+    branches:
+      - main  # or master if you use that
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup SSH
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy to server
+        run: |
+          ssh -o StrictHostKeyChecking=no ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} << 'EOF'
+          cd /var/www/html/Ignite
+          echo "Pulling latest code..."
+          git pull origin main
+
+          echo "Stopping existing containers..."
+          docker compose down
+
+          echo "Rebuilding containers..."
+          docker compose build --no-cache
+
+          echo "Starting up containers..."
+          docker compose up -d
+
+          echo "Running migrations..."
+          docker exec ignite_app php artisan migrate --force
+
+          echo "✅ Deployment complete!"
+          EOF
